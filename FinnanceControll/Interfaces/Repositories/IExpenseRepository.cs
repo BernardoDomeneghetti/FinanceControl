@@ -12,7 +12,7 @@ namespace FinnanceControll.Interfaces.Repositories
 
         void Delete(Guid Id);
 
-        void Read(Guid Id);
+        Expense Read(Guid Id);
 
         ImmutableList<Expense> List(DateRangeFilter rangeFilter);
     }

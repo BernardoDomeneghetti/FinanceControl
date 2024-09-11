@@ -1,7 +1,7 @@
 ﻿namespace FinnanceControll.Models.Domain
 {
-    public class Expense : Transaction
+    public sealed class Expense : Transaction
     {
-        public string Identifier { get; set; }
+        public string Identifier { get; set; } = string.Empty;
     }
 }

@@ -1,4 +1,5 @@
-﻿using FinnanceControll.Interfaces.Repositories;
+﻿using System.Collections.Immutable;
+using FinnanceControll.Interfaces.Repositories;
 using FinnanceControll.Models.Common;
 using FinnanceControll.Models.Domain;
 
@@ -11,22 +12,22 @@ namespace FinnanceControll.Repositories
             throw new NotImplementedException();
         }
 
+        public void Update(Expense expense)
+        {
+            throw new NotImplementedException();
+        }
+
         public void Delete(Guid Id)
         {
             throw new NotImplementedException();
         }
 
-        public void List(DateRangeFilter rangeFilter)
+        public Expense Read(Guid Id)
         {
             throw new NotImplementedException();
         }
 
-        public void Read(Guid Id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Update(Expense expense)
+        public ImmutableList<Expense> List(DateRangeFilter rangeFilter)
         {
             throw new NotImplementedException();
         }

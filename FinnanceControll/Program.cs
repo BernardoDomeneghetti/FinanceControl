@@ -1,4 +1,6 @@
+using FinnanceControll.DataBase;
 using FinnanceControll.Settings;
+using Microsoft.EntityFrameworkCore;
 
 internal class Program
 {
@@ -13,9 +15,14 @@ internal class Program
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
 
+        services.AddDbContext<DataContext>(
+            options=> options.UseSqlServer(builder.Configuration.GetConnectionString("FinanceControllDataBase"))
+        );
+
         #region CustomInjection
 
         services.AddWorkers();
+        services.AddRepositories();
 
         #endregion CustomInjection
 
