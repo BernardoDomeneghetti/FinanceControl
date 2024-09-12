@@ -1,6 +1,8 @@
 using FinnanceControll.Startup.Settings;
 
-public class Program 
+namespace FinnanceControll.API;
+
+public class Program
 {
     public static void Main(string[] args)
     {
