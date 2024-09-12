@@ -24,9 +24,9 @@ namespace FinnanceControll.API.Controllers
         }
 
         [HttpGet("List")]
-        public ActionResult<CollectionResponse<Expense>> ListExpenseInDateRange([FromQuery] DateTime since, DateTime unli)
+        public ActionResult<CollectionResponse<Expense>> ListExpenseInDateRange([FromQuery] DateTime since, DateTime until)
         {
-            var rangefilter = new DateRangeFilter { Since = since, Until = unli };
+            var rangefilter = new DateRangeFilter { Since = since, Until = until };
 
             return WrappedOkExecute(_expenseWorker.ListExpensesInRange, rangefilter);
         }
