@@ -7,8 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentValidation" Version="11.9.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.8">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
@@ -21,7 +19,8 @@
   <ItemGroup>
     <ProjectReference Include="..\FinnanceControll.Common\FinnanceControll.Common.csproj" />
     <ProjectReference Include="..\FinnanceControll.Domain\FinnanceControll.Domain.csproj" />
-    <ProjectReference Include="..\FinnanceControll.Startup\FinnanceControll.Startup.csproj" />
+    <ProjectReference Include="..\FinnanceControll.Infrastructure\FinnanceControll.Infrastructure.csproj" />
+    <ProjectReference Include="..\FinnanceControll.Startup\FinnanceControll.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

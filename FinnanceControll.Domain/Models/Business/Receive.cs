@@ -1,5 +1,3 @@
-using System;
-
 namespace FinnanceControll.Domain.Models.Business;
 
 public sealed class Receive:Transaction

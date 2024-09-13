@@ -3,7 +3,7 @@
 using FinnanceControll.Domain.Models.Business;
 using Microsoft.EntityFrameworkCore;
 
-namespace FinnanceControll.DAL.DataBase;
+namespace FinnanceControll.API.DataBase;
 
 public class DataContext : DbContext
 {

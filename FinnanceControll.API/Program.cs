@@ -1,4 +1,7 @@
-using FinnanceControll.Startup.Settings;
+using FinnanceControll.API.DataBase;
+using FinnanceControll.Infrastructure.Settings;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace FinnanceControll.API;
 
@@ -19,7 +22,10 @@ public class Program
 
         #region CustomInjection
 
-        services.AddOrm(builder);
+        services.AddDbContext<DataContext>(
+                options=> options.UseSqlServer(builder.Configuration.GetConnectionString("FinanceControllDataBase"))
+            );
+            
         services.AddWorkers();
         services.AddRepositories();
 

@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinnanceControll.Common", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinnanceControll.DAL", "FinnanceControll.DAL\FinnanceControll.DAL.csproj", "{61B17FD8-50FE-4144-B1A9-572E7D8D3A28}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinnanceControll.Startup", "FinnanceControll.Startup\FinnanceControll.Startup.csproj", "{3A478DFA-C841-4D03-B68F-61E234CDD195}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinnanceControll.Infrastructure", "FinnanceControll.Infrastructure\FinnanceControll.Infrastructure.csproj", "{3A478DFA-C841-4D03-B68F-61E234CDD195}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
