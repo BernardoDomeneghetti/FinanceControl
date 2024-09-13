@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinanceControl.DAL", "Finan
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinanceControl.Infrastructure", "FinanceControl.Infrastructure\FinanceControl.Infrastructure.csproj", "{3A478DFA-C841-4D03-B68F-61E234CDD195}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinanceControl.Bootstrapper", "FinanceControl.Bootstrapper\FinanceControl.Bootstrapper.csproj", "{17E73A81-8E3B-4659-9460-025EA5B6206B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{3A478DFA-C841-4D03-B68F-61E234CDD195}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A478DFA-C841-4D03-B68F-61E234CDD195}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3A478DFA-C841-4D03-B68F-61E234CDD195}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17E73A81-8E3B-4659-9460-025EA5B6206B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17E73A81-8E3B-4659-9460-025EA5B6206B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17E73A81-8E3B-4659-9460-025EA5B6206B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17E73A81-8E3B-4659-9460-025EA5B6206B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -21,6 +21,7 @@
     <ProjectReference Include="..\FinanceControl.Domain\FinanceControl.Domain.csproj" />
     <ProjectReference Include="..\FinanceControl.Infrastructure\FinanceControl.Infrastructure.csproj" />
     <ProjectReference Include="..\FinanceControl.Startup\FinanceControl.Infrastructure.csproj" />
+    <ProjectReference Include="..\FinanceControl.Bootstrapper\FinanceControl.Bootstrapper.csproj" />
   </ItemGroup>
 
 </Project>

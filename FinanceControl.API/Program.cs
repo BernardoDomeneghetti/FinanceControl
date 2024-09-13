@@ -1,6 +1,4 @@
-using FinanceControl.API.DataBase;
-using FinanceControl.Infrastructure.Settings;
-using Microsoft.EntityFrameworkCore;
+using FinanceControl.Bootstrapper;
 
 
 namespace FinanceControl.API;
@@ -22,10 +20,7 @@ public class Program
 
         #region CustomInjection
 
-        services.AddDbContext<DataContext>(
-                options=> options.UseSqlServer(builder.Configuration.GetConnectionString("FinanceControllDataBase"))
-            );
-            
+        services.AddDataAccess(builder);
         services.AddWorkers();
         services.AddRepositories();
 
