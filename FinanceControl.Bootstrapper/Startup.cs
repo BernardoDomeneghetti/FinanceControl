@@ -1,4 +1,5 @@
 ﻿using FinanceControl.API.DataBase;
+using FinanceControl.DAL.Interfaces;
 using FinanceControl.DAL.Repositories;
 using FinanceControl.Domain.Core.Workers;
 using FinanceControl.Domain.Interfaces.Repositories;
@@ -14,7 +15,7 @@ public static class Startup
 {
     public static void AddDataAccess(this IServiceCollection services, WebApplicationBuilder builder)
     {
-        services.AddDbContext<DataContext>(
+        services.AddDbContext<IDataContext, DataContext>(
             options => options.UseSqlServer(builder.Configuration.GetConnectionString("FinanceControllDataBase"))
         );
     }

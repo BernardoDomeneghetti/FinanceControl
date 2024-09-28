@@ -12,4 +12,5 @@ public class DataContext : DbContext, IDataContext
 
     public DbSet<Expense> Expenses {get; set;}//=> Set<Expense>();
     public DbSet<Receive> Receives {get; set;}//=> Set<Receive>();
+    
 }
