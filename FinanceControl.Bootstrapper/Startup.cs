@@ -22,9 +22,14 @@ public static class Startup
     public static void AddWorkers(this IServiceCollection services)
     {
         services.AddSingleton<IExpenseWorker, ExpenseWorker>();
+        services.AddSingleton<IReceiveWorker, ReceiveWorker>();
+        services.AddSingleton<ITransferWorker, TransferWorker>();
     }
     public static void AddRepositories(this IServiceCollection services)
     {
         services.AddSingleton<IExpenseRepository, ExpenseRepository>();
+        services.AddSingleton<IReceiveRepository, ReceiveRepository>();
+        services.AddSingleton<ITransferRepository, TransferRepository>();
+
     }
 }
