@@ -1,6 +1,5 @@
-﻿using FinanceControl.Common.Models;
-using FinanceControl.Common.Resources;
-using FinanceControl.Comon.Resources;
+﻿using FinanceControl.Common.Consts;
+using FinanceControl.Common.Models;
 using FinanceControl.Domain.Core.Validators;
 using FinanceControl.Domain.Exceptions;
 using FinanceControl.Domain.Interfaces.Repositories;
@@ -19,18 +18,18 @@ namespace FinanceControl.Domain.Core.Workers
         public ReceiveWorker(IReceiveRepository ReceiveRepository)
         {
             _ReceiveRepository = ReceiveRepository;
-            _ReceiveValidator = new ReceiveValidator();
+            _ReceiveValidator = new ReceiveValidator(); 
             _rangeFilterValidator = new RangeFilterValidation();
         }
 
-        public ReceiveResponse CreateReceive(Receive receive)
+        public async Task<ReceiveResponse> CreateReceive(Receive receive)
         {
             var validation = _ReceiveValidator.Validate(receive);
 
             if (!validation.IsValid)
                 throw new BadRequestException(ErrorMessages.ValidationFailure, validation.Errors);
 
-            _ReceiveRepository.Create(receive);
+            await _ReceiveRepository.Create(receive);
 
             var result = new ReceiveResponse
             {
@@ -41,53 +40,53 @@ namespace FinanceControl.Domain.Core.Workers
             return result;
         }
 
-        public void DeleteReceive(Guid id)
+        public async Task DeleteReceive(Guid id)
         {
-            _ReceiveRepository.Delete(id);
+            await _ReceiveRepository.Delete(id);
         }
 
-        public ReceiveResponse GetReceiveById(Guid id)
+        public async Task<ReceiveResponse> GetReceiveById(Guid id)
         {
-            _ReceiveRepository.Read(id);
+            await _ReceiveRepository.Read(id);
 
             var result = new ReceiveResponse
             {
-                Message = ResponseMessages.ObjectSucessfullyRead200,
+                Message = ResponseMessages.ObjectSuccessfullyRead200,
             };
 
             return result;
         }
 
-        public CollectionResponse<Receive> ListReceivesInRange(DateRangeFilter rangefilter)
+        public async Task<CollectionResponse<Receive>> ListReceivesInRange(DateRangeFilter rangefilter)
         {
             var validation = _rangeFilterValidator.Validate(rangefilter);
 
             if (!validation.IsValid)
                 throw new BadRequestException(ErrorMessages.ValidationFailure, validation.Errors);
 
-            var Receives = _ReceiveRepository.List(rangefilter);
+            var Receives = await _ReceiveRepository.List(rangefilter);
 
             var result = new CollectionResponse<Receive>
             {
-                Message = ResponseMessages.ObjectSucessfullyRead200,
+                Message = ResponseMessages.ObjectSuccessfullyRead200,
                 Payload = [.. Receives]
             };
 
             return result;
         }
 
-        public ReceiveResponse UpdateReceive(Receive receive)
+        public async Task<ReceiveResponse> UpdateReceive(Receive receive)
         {
             var validation = _ReceiveValidator.Validate(receive);
 
             if (!validation.IsValid)
                 throw new BadRequestException(ErrorMessages.ValidationFailure, validation.Errors);
 
-            _ReceiveRepository.Update(receive);
+            await _ReceiveRepository.Update(receive);
 
             var result = new ReceiveResponse
             {
-                Message = ResponseMessages.ObjectSuccessfullyUpdated200,
+                Message = ResponseMessages.ObjectSussessfullyUpdated200,
                 Payload = receive
             };
 

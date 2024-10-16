@@ -9,27 +9,27 @@ namespace FinanceControl.DAL.Repositories
 {
     public class ExpenseRepository : IExpenseRepository
     {
-        public void Create(Expense expense)
+        public async Task Create(Expense expense)
         {
             throw new NotImplementedException();
         }
 
-        public void Update(Expense expense)
+        public async Task Update(Expense expense)
         {
             throw new NotImplementedException();
         }
 
-        public void Delete(Guid Id)
+        public async Task Delete(Guid Id)
         {
             throw new NotImplementedException();
         }
 
-        public Expense Read(Guid Id)
+        public async Task<Expense> Read(Guid Id)
         {
             throw new NotImplementedException();
         }
 
-        public ImmutableList<Expense> List(DateRangeFilter rangeFilter)
+        public async Task<ImmutableList<Expense>> List(DateRangeFilter rangeFilter)
         {
             throw new NotImplementedException();
         }

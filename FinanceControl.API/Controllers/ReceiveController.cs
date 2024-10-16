@@ -1,56 +1,150 @@
-﻿using FinanceControl.API.ControllerDtos;
+﻿using AutoMapper;
+using FinanceControl.API.ControllerDtos;
+using FinanceControl.Common.Consts;
 using FinanceControl.Common.Models;
+using FinanceControl.Domain.Exceptions;
 using FinanceControl.Domain.Interfaces.Workers;
 using FinanceControl.Domain.Models.Business;
 using FinanceControl.Domain.Models.Responses;
-using Mapster;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace FinanceControl.API.Controllers
 {
     [ApiController]
     [Route("/api/v1/[Controller]")]
-    public class ReceiveController : CustomBaseController<ReceiveController>
+    public class ReceiveController : ControllerBase
     {
         private readonly IReceiveWorker _ReceiveWorker;
+        private readonly IMapper _mapper;
+        private readonly ILogger<ReceiveController> _logger;
 
-        public ReceiveController(IReceiveWorker ReceiveWorker, ILogger<ReceiveController> logger) : base(logger)
+        public ReceiveController(IReceiveWorker ReceiveWorker, IMapper mapper, ILogger<ReceiveController> logger)
         {
             _ReceiveWorker = ReceiveWorker;
+            _mapper = mapper;
+            _logger = logger;
         }
 
         [HttpGet]
-        public ActionResult<ReceiveResponse> GetReceiveById([FromQuery] Guid id)
+        public async Task<ActionResult<ReceiveResponse>> GetReceiveById([FromQuery] Guid id)
         {
-            return WrappedOkExecute(_ReceiveWorker.GetReceiveById, id);
+            try
+            {       
+                var response = await _ReceiveWorker.GetReceiveById(id);
+                return Ok(response);
+            }
+            catch(BadRequestException ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest(ex.Message);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return StatusCode(
+                    StatusCodes.Status500InternalServerError,
+                    ResponseMessages.InternalServerError500
+                );
+            }
         }
 
         [HttpGet("List")]
-        public ActionResult<CollectionResponse<Receive>> ListReceiveInDateRange([FromQuery] DateTime since, DateTime until)
+        public async Task<ActionResult<CollectionResponse<Receive>>> ListReceiveInDateRange([FromQuery] DateTime since, DateTime until)
         {
-            var rangefilter = new DateRangeFilter { Since = since, Until = until };
-
-            return WrappedOkExecute(_ReceiveWorker.ListReceivesInRange, rangefilter);
+            try
+            {
+                var rangefilter = new DateRangeFilter { Since = since, Until = until };
+                var response = await _ReceiveWorker.ListReceivesInRange(rangefilter);
+                return Ok(response);
+            }
+            catch(BadRequestException ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest(ex.Message);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return StatusCode(
+                    StatusCodes.Status500InternalServerError,
+                    ResponseMessages.InternalServerError500
+                );
+            }
         }
 
         [HttpPost]
-        public ActionResult<ReceiveResponse> CreateReceive(ReceiveDto receiveDto)
+        public async Task<ActionResult<ReceiveResponse>> CreateReceive(ReceiveDto receiveDto)
         {
-            var receive = receiveDto.Adapt<Receive>();
-            return WrappedCreatedExecute(_ReceiveWorker.CreateReceive, receive);
+            try
+            {
+                var receive = _mapper.Map<Receive>(receiveDto);
+                var response = await _ReceiveWorker.CreateReceive(receive);
+                return Ok(response);
+            }
+            catch(BadRequestException ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest(ex.Message);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return StatusCode(
+                    StatusCodes.Status500InternalServerError,
+                    ResponseMessages.InternalServerError500
+                );
+            }
+
         }
 
         [HttpPut]
-        public ActionResult<ReceiveResponse> UpdateReceive(ReceiveDto receiveDto)
+        public async Task<ActionResult<ReceiveResponse>> UpdateReceive(ReceiveDto receiveDto)
         {
-            var receive = receiveDto.Adapt<Receive>();
-            return WrappedOkExecute(_ReceiveWorker.UpdateReceive, receive);
+            try
+            {
+                var receive = _mapper.Map<Receive>(receiveDto);
+                var response = await _ReceiveWorker.UpdateReceive(receive);
+                return Ok(response);
+            }
+            catch(BadRequestException ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest(ex.Message);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return StatusCode(
+                    StatusCodes.Status500InternalServerError,
+                    ResponseMessages.InternalServerError500
+                );
+            }
         }
 
         [HttpDelete]
-        public ActionResult<ReceiveResponse> DeleteReceive(Guid id)
+        public async Task<ActionResult<ReceiveResponse>> DeleteReceive(Guid id)
         {
-            return WrappedDeletedExecute(_ReceiveWorker.DeleteReceive, id);
+            try
+            {
+                await _ReceiveWorker.DeleteReceive(id);
+                return Ok(ResponseMessages.ObjectSussessfullyDeleted204);
+            }
+            catch(BadRequestException ex)
+            {
+                _logger.LogError(ex.Message);
+                return BadRequest(ex.Message);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return StatusCode(
+                    StatusCodes.Status500InternalServerError,
+                    ResponseMessages.InternalServerError500
+                );
+            }
+            
         }
     }
 }

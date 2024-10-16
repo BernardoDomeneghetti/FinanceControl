@@ -9,27 +9,27 @@ namespace FinanceControl.DAL.Repositories
 {
     public class TransferRepository : ITransferRepository
     {
-        public void Create(Transfer transfer)
+        public async Task Create(Transfer transfer)
         {
             throw new NotImplementedException();
         }
 
-        public void Update(Transfer transfer)
+        public async Task Update(Transfer transfer)
         {
             throw new NotImplementedException();
         }
 
-        public void Delete(Guid Id)
+        public async Task Delete(Guid Id)
         {
             throw new NotImplementedException();
         }
 
-        public Transfer Read(Guid Id)
+        public async Task<Transfer> Read(Guid Id)
         {
             throw new NotImplementedException();
         }
 
-        public ImmutableList<Transfer> List(DateRangeFilter rangeFilter)
+        public async Task<ImmutableList<Transfer>> List(DateRangeFilter rangeFilter)
         {
             throw new NotImplementedException();
         }

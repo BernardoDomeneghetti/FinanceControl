@@ -8,14 +8,14 @@ namespace FinanceControl.Domain.Interfaces.Workers
 {
     public interface ITransferWorker
     {
-        TransferResponse CreateTransfer(Transfer transfer);
+        Task<TransferResponse> CreateTransfer(Transfer transfer);
 
-        TransferResponse GetTransferById(Guid id);
+        Task<TransferResponse> GetTransferById(Guid id);
 
-        TransferResponse UpdateTransfer(Transfer transfer);
+        Task<TransferResponse> UpdateTransfer(Transfer transfer);
 
-        void DeleteTransfer(Guid id);
+        Task DeleteTransfer(Guid id);
 
-        CollectionResponse<Transfer> ListTransfersInRange(DateRangeFilter rangefilter);
+        Task<CollectionResponse<Transfer>> ListTransfersInRange(DateRangeFilter rangefilter);
     }
 }

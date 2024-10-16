@@ -6,14 +6,14 @@ namespace FinanceControl.Domain.Interfaces.Repositories
 {
     public interface IReceiveRepository
     {
-        void Create(Receive receive);
+        Task Create(Receive receive);
 
-        void Update(Receive receive);
+        Task Update(Receive receive);
 
-        void Delete(Guid Id);
+        Task Delete(Guid Id);
 
-        Receive Read(Guid Id);
+        Task<Receive> Read(Guid Id);
 
-        ImmutableList<Receive> List(DateRangeFilter rangeFilter);
+        Task<ImmutableList<Receive>> List(DateRangeFilter rangeFilter);
     }
 }

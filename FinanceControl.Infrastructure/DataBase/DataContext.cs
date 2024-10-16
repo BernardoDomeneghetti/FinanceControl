@@ -1,9 +1,8 @@
 using FinanceControl.DAL.Interfaces;
 using FinanceControl.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
-using FinanceControl.Domain.Models.Business;
 
-namespace FinanceControl.API.DataBase
+namespace FinanceControl.Infrastrutcture.DataBase
 {
     public class DataContext : DbContext, IDataContext
     {
@@ -18,4 +17,5 @@ namespace FinanceControl.API.DataBase
         public DbSet<AccountEntity> Accounts { get; set; }
         public DbSet<CategoryEntity> Categories { get; set; }
     }
+    
 }

@@ -1,5 +1,4 @@
 using FinanceControl.DAL.Entities;
-using FinanceControl.Domain.Models.Business;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 

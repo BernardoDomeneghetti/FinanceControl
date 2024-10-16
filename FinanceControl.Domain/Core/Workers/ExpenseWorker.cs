@@ -1,6 +1,5 @@
-﻿using FinanceControl.Common.Models;
-using FinanceControl.Common.Resources;
-using FinanceControl.Comon.Resources;
+﻿using FinanceControl.Common.Consts;
+using FinanceControl.Common.Models;
 using FinanceControl.Domain.Core.Validators;
 using FinanceControl.Domain.Exceptions;
 using FinanceControl.Domain.Interfaces.Repositories;
@@ -23,71 +22,71 @@ namespace FinanceControl.Domain.Core.Workers
             _rangeFilterValidator = new RangeFilterValidation();
         }
 
-        public ExpenseResponse CreateExpense(Expense expense)
+        public async Task<ExpenseResponse> CreateExpense(Expense expense)
         {
             var validation = _expenseValidator.Validate(expense);
 
             if (!validation.IsValid)
                 throw new BadRequestException(ErrorMessages.ValidationFailure, validation.Errors);
 
-            _expenseRepository.Create(expense);
+            await _expenseRepository.Create(expense);
 
             var result = new ExpenseResponse
             {
-                Message = ResponseMessages.ObjectSuccessfullyCreated201,
+                Message = ResponseMessages.ObjectSuccessfullyCreated201, 
                 Payload = expense
             };
 
             return result;
         }
 
-        public void DeleteExpense(Guid id)
+        public async Task DeleteExpense(Guid id)
         {
-            _expenseRepository.Delete(id);
+            await _expenseRepository.Delete(id);
         }
 
-        public ExpenseResponse GetExpenseById(Guid id)
+        public async Task<ExpenseResponse> GetExpenseById(Guid id)
         {
-            _expenseRepository.Read(id);
+            await _expenseRepository.Read(id);
 
             var result = new ExpenseResponse
             {
-                Message = ResponseMessages.ObjectSucessfullyRead200,
+                Message = ResponseMessages.ObjectSuccessfullyCreated201,
             };
 
             return result;
         }
 
-        public CollectionResponse<Expense> ListExpensesInRange(DateRangeFilter rangefilter)
+        public async Task<CollectionResponse<Expense>> ListExpensesInRange(DateRangeFilter rangefilter)
         {
             var validation = _rangeFilterValidator.Validate(rangefilter);
 
             if (!validation.IsValid)
                 throw new BadRequestException(ErrorMessages.ValidationFailure, validation.Errors);
 
-            var expenses = _expenseRepository.List(rangefilter);
+            var expenses = await _expenseRepository.List(rangefilter);
 
             var result = new CollectionResponse<Expense>
             {
-                Message = ResponseMessages.ObjectSucessfullyRead200,
+                Message = ResponseMessages.ObjectSuccessfullyCreated201,
                 Payload = [.. expenses]
             };
 
             return result;
         }
 
-        public ExpenseResponse UpdateExpense(Expense expense)
+        public async Task<ExpenseResponse> UpdateExpense(Expense expense)
         {
             var validation = _expenseValidator.Validate(expense);
 
             if (!validation.IsValid)
                 throw new BadRequestException(ErrorMessages.ValidationFailure, validation.Errors);
 
-            _expenseRepository.Update(expense);
+            await _expenseRepository.Update(expense);
 
             var result = new ExpenseResponse
             {
-                Message = ResponseMessages.ObjectSuccessfullyUpdated200,
+                Message = ResponseMessages.ObjectSuccessfullyCreated201,
                 Payload = expense
             };
 

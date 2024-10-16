@@ -1,6 +1,5 @@
 ﻿
-
-using FinanceControl.Common.Resources;
+using FinanceControl.Common.Consts;
 using FinanceControl.Domain.Models.Business;
 using FluentValidation;
 

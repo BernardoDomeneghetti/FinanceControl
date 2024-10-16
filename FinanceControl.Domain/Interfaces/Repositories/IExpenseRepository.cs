@@ -6,14 +6,14 @@ namespace FinanceControl.Domain.Interfaces.Repositories
 {
     public interface IExpenseRepository
     {
-        void Create(Expense expense);
+        Task Create(Expense expense);
 
-        void Update(Expense expense);
+        Task Update(Expense expense);
 
-        void Delete(Guid Id);
+        Task Delete(Guid Id);
 
-        Expense Read(Guid Id);
+        Task<Expense> Read(Guid Id);
 
-        ImmutableList<Expense> List(DateRangeFilter rangeFilter);
+        Task<ImmutableList<Expense>> List(DateRangeFilter rangeFilter);
     }
 }

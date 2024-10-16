@@ -6,14 +6,14 @@ namespace FinanceControl.Domain.Interfaces.Repositories
 {
     public interface ITransferRepository
     {
-        void Create(Transfer transfer);
+        Task Create(Transfer transfer);
 
-        void Update(Transfer transfer);
+        Task Update(Transfer transfer);
 
-        void Delete(Guid Id);
+        Task Delete(Guid Id);
 
-        Transfer Read(Guid Id);
+        Task<Transfer> Read(Guid Id);
 
-        ImmutableList<Transfer> List(DateRangeFilter rangeFilter);
+        Task<ImmutableList<Transfer>> List(DateRangeFilter rangeFilter);
     }
 }

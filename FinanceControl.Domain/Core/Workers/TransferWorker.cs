@@ -1,6 +1,5 @@
-﻿using FinanceControl.Common.Models;
-using FinanceControl.Common.Resources;
-using FinanceControl.Comon.Resources;
+﻿using FinanceControl.Common.Consts;
+using FinanceControl.Common.Models;
 using FinanceControl.Domain.Core.Validators;
 using FinanceControl.Domain.Exceptions;
 using FinanceControl.Domain.Interfaces.Repositories;
@@ -23,14 +22,14 @@ namespace FinanceControl.Domain.Core.Workers
             _rangeFilterValidator = new RangeFilterValidation();
         }
 
-        public TransferResponse CreateTransfer(Transfer transfer)
+        public async Task<TransferResponse> CreateTransfer(Transfer transfer)
         {
             var validation = _TransferValidator.Validate(transfer);
 
             if (!validation.IsValid)
                 throw new BadRequestException(ErrorMessages.ValidationFailure, validation.Errors);
 
-            _TransferRepository.Create(transfer);
+            await _TransferRepository.Create(transfer);
 
             var result = new TransferResponse
             {
@@ -41,53 +40,53 @@ namespace FinanceControl.Domain.Core.Workers
             return result;
         }
 
-        public void DeleteTransfer(Guid id)
+        public async Task DeleteTransfer(Guid id)
         {
-            _TransferRepository.Delete(id);
+            await _TransferRepository.Delete(id);
         }
 
-        public TransferResponse GetTransferById(Guid id)
+        public async Task<TransferResponse> GetTransferById(Guid id)
         {
-            _TransferRepository.Read(id);
+            await _TransferRepository.Read(id);
 
             var result = new TransferResponse
             {
-                Message = ResponseMessages.ObjectSucessfullyRead200,
+                Message = ResponseMessages.ObjectSuccessfullyRead200,
             };
 
             return result;
         }
 
-        public CollectionResponse<Transfer> ListTransfersInRange(DateRangeFilter rangefilter)
+        public async Task<CollectionResponse<Transfer>> ListTransfersInRange(DateRangeFilter rangefilter)
         {
             var validation = _rangeFilterValidator.Validate(rangefilter);
 
             if (!validation.IsValid)
                 throw new BadRequestException(ErrorMessages.ValidationFailure, validation.Errors);
 
-            var Transfers = _TransferRepository.List(rangefilter);
+            var Transfers = await _TransferRepository.List(rangefilter);
 
             var result = new CollectionResponse<Transfer>
             {
-                Message = ResponseMessages.ObjectSucessfullyRead200,
+                Message = ResponseMessages.ObjectSuccessfullyRead200,
                 Payload = [.. Transfers]
             };
 
             return result;
         }
 
-        public TransferResponse UpdateTransfer(Transfer transfer)
+        public async Task<TransferResponse> UpdateTransfer(Transfer transfer)
         {
             var validation = _TransferValidator.Validate(transfer);
 
             if (!validation.IsValid)
                 throw new BadRequestException(ErrorMessages.ValidationFailure, validation.Errors);
 
-            _TransferRepository.Update(transfer);
+            await _TransferRepository.Update(transfer);
 
             var result = new TransferResponse
             {
-                Message = ResponseMessages.ObjectSuccessfullyUpdated200,
+                Message = ResponseMessages.ObjectSussessfullyUpdated200,
                 Payload = transfer
             };
 

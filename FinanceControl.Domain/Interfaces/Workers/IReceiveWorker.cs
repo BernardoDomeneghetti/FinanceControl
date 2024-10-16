@@ -8,14 +8,14 @@ namespace FinanceControl.Domain.Interfaces.Workers
 {
     public interface IReceiveWorker
     {
-        ReceiveResponse CreateReceive(Receive receive);
+        Task<ReceiveResponse> CreateReceive(Receive receive);
 
-        ReceiveResponse GetReceiveById(Guid id);
+        Task<ReceiveResponse> GetReceiveById(Guid id);
 
-        ReceiveResponse UpdateReceive(Receive receive);
+        Task<ReceiveResponse> UpdateReceive(Receive receive);
 
-        void DeleteReceive(Guid id);
+        Task DeleteReceive(Guid id);
 
-        CollectionResponse<Receive> ListReceivesInRange(DateRangeFilter rangefilter);
+        Task<CollectionResponse<Receive>> ListReceivesInRange(DateRangeFilter rangefilter);
     }
 }
