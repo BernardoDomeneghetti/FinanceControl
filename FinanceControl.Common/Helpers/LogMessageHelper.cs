@@ -1,6 +1,6 @@
 ﻿
 
-using FinanceControl.Common.Resources;
+using FinanceControl.Common.Consts;
 
 namespace FinanceControl.Helpers
 {

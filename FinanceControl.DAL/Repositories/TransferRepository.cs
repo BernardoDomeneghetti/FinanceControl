@@ -7,14 +7,14 @@ using FinanceControl.Domain.Models.Business;
 
 namespace FinanceControl.DAL.Repositories
 {
-    public class ExpenseRepository : IExpenseRepository
+    public class TransferRepository : ITransferRepository
     {
-        public async Task Create(Expense expense)
+        public async Task Create(Transfer transfer)
         {
             throw new NotImplementedException();
         }
 
-        public async Task Update(Expense expense)
+        public async Task Update(Transfer transfer)
         {
             throw new NotImplementedException();
         }
@@ -24,12 +24,12 @@ namespace FinanceControl.DAL.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<Expense> Read(Guid Id)
+        public async Task<Transfer> Read(Guid Id)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<ImmutableList<Expense>> List(DateRangeFilter rangeFilter)
+        public async Task<ImmutableList<Transfer>> List(DateRangeFilter rangeFilter)
         {
             throw new NotImplementedException();
         }

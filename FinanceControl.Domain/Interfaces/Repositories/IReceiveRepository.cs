@@ -4,16 +4,16 @@ using System.Collections.Immutable;
 
 namespace FinanceControl.Domain.Interfaces.Repositories
 {
-    public interface IExpenseRepository
+    public interface IReceiveRepository
     {
-        Task Create(Expense expense);
+        Task Create(Receive receive);
 
-        Task Update(Expense expense);
+        Task Update(Receive receive);
 
         Task Delete(Guid Id);
 
-        Task<Expense> Read(Guid Id);
+        Task<Receive> Read(Guid Id);
 
-        Task<ImmutableList<Expense>> List(DateRangeFilter rangeFilter);
+        Task<ImmutableList<Receive>> List(DateRangeFilter rangeFilter);
     }
 }

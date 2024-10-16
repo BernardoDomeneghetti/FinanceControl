@@ -8,14 +8,14 @@ namespace FinanceControl.Domain.Interfaces.Workers
 {
     public interface IExpenseWorker
     {
-        ExpenseResponse CreateExpense(Expense expense);
+        Task<ExpenseResponse> CreateExpense(Expense expense);
 
-        ExpenseResponse GetExpenseById(Guid id);
+        Task<ExpenseResponse> GetExpenseById(Guid id);
 
-        ExpenseResponse UpdateExpense(Expense expense);
+        Task<ExpenseResponse> UpdateExpense(Expense expense);
 
-        void DeleteExpense(Guid id);
+        Task DeleteExpense(Guid id);
 
-        CollectionResponse<Expense> ListExpensesInRange(DateRangeFilter rangefilter);
+        Task<CollectionResponse<Expense>> ListExpensesInRange(DateRangeFilter rangefilter);
     }
 }
