@@ -9,6 +9,7 @@ Tópicos que pretendo exercitar neste projeto:
 - Hospedar a aplicação em um AKS para permitir escalabilidade
 - Centralizar dados de cache no redis
 - Criar dockerfiles para configurar o ambiente
+- Utilizar o padrão bootstrapper para gerenciamento e configuração do projeto, desde injeções a inicialização.
 
 Aqui seguem alguns comandos que podem facilitar o uso do projeto caso deseje baixar:
 
