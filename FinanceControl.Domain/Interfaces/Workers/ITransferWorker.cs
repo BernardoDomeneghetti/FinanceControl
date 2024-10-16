@@ -8,11 +8,11 @@ namespace FinanceControl.Domain.Interfaces.Workers
 {
     public interface ITransferWorker
     {
-        TransferResponse CreateTransfer(Transfer Transfer);
+        TransferResponse CreateTransfer(Transfer transfer);
 
         TransferResponse GetTransferById(Guid id);
 
-        TransferResponse UpdateTransfer(Transfer Transfer);
+        TransferResponse UpdateTransfer(Transfer transfer);
 
         void DeleteTransfer(Guid id);
 

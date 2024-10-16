@@ -1,7 +1,9 @@
-﻿using FinanceControl.Common.Models;
+﻿using FinanceControl.API.ControllerDtos;
+using FinanceControl.Common.Models;
 using FinanceControl.Domain.Interfaces.Workers;
 using FinanceControl.Domain.Models.Business;
 using FinanceControl.Domain.Models.Responses;
+using Mapster;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FinanceControl.API.Controllers
@@ -32,15 +34,17 @@ namespace FinanceControl.API.Controllers
         }
 
         [HttpPost]
-        public ActionResult<ReceiveResponse> CreateReceive(Receive Receive)
+        public ActionResult<ReceiveResponse> CreateReceive(ReceiveDto receiveDto)
         {
-            return WrappedCreatedExecute(_ReceiveWorker.CreateReceive, Receive);
+            var receive = receiveDto.Adapt<Receive>();
+            return WrappedCreatedExecute(_ReceiveWorker.CreateReceive, receive);
         }
 
         [HttpPut]
-        public ActionResult<ReceiveResponse> UpdateReceive(Receive Receive)
+        public ActionResult<ReceiveResponse> UpdateReceive(ReceiveDto receiveDto)
         {
-            return WrappedOkExecute(_ReceiveWorker.UpdateReceive, Receive);
+            var receive = receiveDto.Adapt<Receive>();
+            return WrappedOkExecute(_ReceiveWorker.UpdateReceive, receive);
         }
 
         [HttpDelete]

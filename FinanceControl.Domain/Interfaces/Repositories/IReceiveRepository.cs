@@ -6,9 +6,9 @@ namespace FinanceControl.Domain.Interfaces.Repositories
 {
     public interface IReceiveRepository
     {
-        void Create(Receive Receive);
+        void Create(Receive receive);
 
-        void Update(Receive Receive);
+        void Update(Receive receive);
 
         void Delete(Guid Id);
 

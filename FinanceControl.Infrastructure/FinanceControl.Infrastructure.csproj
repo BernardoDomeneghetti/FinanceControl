@@ -14,5 +14,9 @@
     <ProjectReference Include="..\FinanceControl.DAL\FinanceControl.DAL.csproj" />
     <ProjectReference Include="..\FinanceControl.Domain\FinanceControl.Domain.csproj" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="Entities\" />
+  </ItemGroup>
 
 </Project>

@@ -23,19 +23,19 @@ namespace FinanceControl.Domain.Core.Workers
             _rangeFilterValidator = new RangeFilterValidation();
         }
 
-        public ReceiveResponse CreateReceive(Receive Receive)
+        public ReceiveResponse CreateReceive(Receive receive)
         {
-            var validation = _ReceiveValidator.Validate(Receive);
+            var validation = _ReceiveValidator.Validate(receive);
 
             if (!validation.IsValid)
                 throw new BadRequestException(ErrorMessages.ValidationFailure, validation.Errors);
 
-            _ReceiveRepository.Create(Receive);
+            _ReceiveRepository.Create(receive);
 
             var result = new ReceiveResponse
             {
                 Message = ResponseMessages.ObjectSuccessfullyCreated201,
-                Payload = Receive
+                Payload = receive
             };
 
             return result;
@@ -76,19 +76,19 @@ namespace FinanceControl.Domain.Core.Workers
             return result;
         }
 
-        public ReceiveResponse UpdateReceive(Receive Receive)
+        public ReceiveResponse UpdateReceive(Receive receive)
         {
-            var validation = _ReceiveValidator.Validate(Receive);
+            var validation = _ReceiveValidator.Validate(receive);
 
             if (!validation.IsValid)
                 throw new BadRequestException(ErrorMessages.ValidationFailure, validation.Errors);
 
-            _ReceiveRepository.Update(Receive);
+            _ReceiveRepository.Update(receive);
 
             var result = new ReceiveResponse
             {
                 Message = ResponseMessages.ObjectSuccessfullyUpdated200,
-                Payload = Receive
+                Payload = receive
             };
 
             return result;

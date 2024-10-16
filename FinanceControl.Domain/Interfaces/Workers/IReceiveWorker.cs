@@ -8,11 +8,11 @@ namespace FinanceControl.Domain.Interfaces.Workers
 {
     public interface IReceiveWorker
     {
-        ReceiveResponse CreateReceive(Receive Receive);
+        ReceiveResponse CreateReceive(Receive receive);
 
         ReceiveResponse GetReceiveById(Guid id);
 
-        ReceiveResponse UpdateReceive(Receive Receive);
+        ReceiveResponse UpdateReceive(Receive receive);
 
         void DeleteReceive(Guid id);
 

@@ -9,12 +9,12 @@ namespace FinanceControl.DAL.Repositories
 {
     public class TransferRepository : ITransferRepository
     {
-        public void Create(Transfer Transfer)
+        public void Create(Transfer transfer)
         {
             throw new NotImplementedException();
         }
 
-        public void Update(Transfer Transfer)
+        public void Update(Transfer transfer)
         {
             throw new NotImplementedException();
         }

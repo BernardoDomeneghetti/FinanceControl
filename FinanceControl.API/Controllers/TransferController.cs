@@ -1,7 +1,9 @@
-﻿using FinanceControl.Common.Models;
+﻿using FinanceControl.API.ControllerDtos;
+using FinanceControl.Common.Models;
 using FinanceControl.Domain.Interfaces.Workers;
 using FinanceControl.Domain.Models.Business;
 using FinanceControl.Domain.Models.Responses;
+using Mapster;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FinanceControl.API.Controllers
@@ -32,15 +34,17 @@ namespace FinanceControl.API.Controllers
         }
 
         [HttpPost]
-        public ActionResult<TransferResponse> CreateTransfer(Transfer Transfer)
+        public ActionResult<TransferResponse> CreateTransfer(TransferDto transferDto)
         {
-            return WrappedCreatedExecute(_TransferWorker.CreateTransfer, Transfer);
+            var transfer = transferDto.Adapt<Transfer>();
+            return WrappedCreatedExecute(_TransferWorker.CreateTransfer, transfer);
         }
 
         [HttpPut]
-        public ActionResult<TransferResponse> UpdateTransfer(Transfer Transfer)
+        public ActionResult<TransferResponse> UpdateTransfer(TransferDto transferDto)
         {
-            return WrappedOkExecute(_TransferWorker.UpdateTransfer, Transfer);
+            var transfer = transferDto.Adapt<Transfer>();
+            return WrappedOkExecute(_TransferWorker.UpdateTransfer, transfer);
         }
 
         [HttpDelete]

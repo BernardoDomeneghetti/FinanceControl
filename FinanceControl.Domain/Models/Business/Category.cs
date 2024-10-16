@@ -1,5 +1,3 @@
-using System;
-
 namespace FinanceControl.Domain.Models.Business;
 
 public class Category

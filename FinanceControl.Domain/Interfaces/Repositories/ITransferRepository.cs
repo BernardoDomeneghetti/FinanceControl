@@ -6,9 +6,9 @@ namespace FinanceControl.Domain.Interfaces.Repositories
 {
     public interface ITransferRepository
     {
-        void Create(Transfer Transfer);
+        void Create(Transfer transfer);
 
-        void Update(Transfer Transfer);
+        void Update(Transfer transfer);
 
         void Delete(Guid Id);
 

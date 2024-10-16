@@ -2,6 +2,6 @@
 
 public sealed class Expense : Transaction
 {
-    public required string Identifier { get; set; } = string.Empty;
+    public required string Description { get; set; } = string.Empty;
     public required Category Category { get; set; }
 }

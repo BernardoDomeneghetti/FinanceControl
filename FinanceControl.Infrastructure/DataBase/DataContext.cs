@@ -1,16 +1,21 @@
 using FinanceControl.DAL.Interfaces;
-using FinanceControl.Domain.Models.Business;
+using FinanceControl.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
+using FinanceControl.Domain.Models.Business;
 
-namespace FinanceControl.API.DataBase;
-
-public class DataContext : DbContext, IDataContext
+namespace FinanceControl.API.DataBase
 {
-    public DataContext(DbContextOptions<DataContext> options) : base(options)
+    public class DataContext : DbContext, IDataContext
     {
-    }
+        public DataContext(DbContextOptions<DataContext> options) : base(options)
+        {
+        }
 
-    public DbSet<Expense> Expenses {get; set;}//=> Set<Expense>();
-    public DbSet<Receive> Receives {get; set;}//=> Set<Receive>();
-    
+        public DbSet<TransactionEntity> Transactions { get; set; }
+        public DbSet<ExpenseEntity> Expenses { get; set; }
+        public DbSet<ReceiveEntity> Receives { get; set; }
+        public DbSet<TransferEntity> Transfers { get; set; }
+        public DbSet<AccountEntity> Accounts { get; set; }
+        public DbSet<CategoryEntity> Categories { get; set; }
+    }
 }

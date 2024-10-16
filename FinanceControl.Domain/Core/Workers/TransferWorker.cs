@@ -23,19 +23,19 @@ namespace FinanceControl.Domain.Core.Workers
             _rangeFilterValidator = new RangeFilterValidation();
         }
 
-        public TransferResponse CreateTransfer(Transfer Transfer)
+        public TransferResponse CreateTransfer(Transfer transfer)
         {
-            var validation = _TransferValidator.Validate(Transfer);
+            var validation = _TransferValidator.Validate(transfer);
 
             if (!validation.IsValid)
                 throw new BadRequestException(ErrorMessages.ValidationFailure, validation.Errors);
 
-            _TransferRepository.Create(Transfer);
+            _TransferRepository.Create(transfer);
 
             var result = new TransferResponse
             {
                 Message = ResponseMessages.ObjectSuccessfullyCreated201,
-                Payload = Transfer
+                Payload = transfer
             };
 
             return result;
@@ -76,19 +76,19 @@ namespace FinanceControl.Domain.Core.Workers
             return result;
         }
 
-        public TransferResponse UpdateTransfer(Transfer Transfer)
+        public TransferResponse UpdateTransfer(Transfer transfer)
         {
-            var validation = _TransferValidator.Validate(Transfer);
+            var validation = _TransferValidator.Validate(transfer);
 
             if (!validation.IsValid)
                 throw new BadRequestException(ErrorMessages.ValidationFailure, validation.Errors);
 
-            _TransferRepository.Update(Transfer);
+            _TransferRepository.Update(transfer);
 
             var result = new TransferResponse
             {
                 Message = ResponseMessages.ObjectSuccessfullyUpdated200,
-                Payload = Transfer
+                Payload = transfer
             };
 
             return result;

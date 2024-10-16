@@ -9,12 +9,12 @@ namespace FinanceControl.DAL.Repositories
 {
     public class ReceiveRepository : IReceiveRepository
     {
-        public void Create(Receive Receive)
+        public void Create(Receive receive)
         {
             throw new NotImplementedException();
         }
 
-        public void Update(Receive Receive)
+        public void Update(Receive receive)
         {
             throw new NotImplementedException();
         }

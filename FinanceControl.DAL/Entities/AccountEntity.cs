@@ -1,10 +1,11 @@
-namespace FinanceControl.Domain.Models.Business;
+namespace FinanceControl.DAL.Entities;
 
-public class Account
+public class AccountEntity
 {
     public int Id { get; set;}
     public string AccountName { get; set; } = string.Empty;
     public double InitialValue { get; set; }
     public int Bank { get; set; }
-    public AccountType AccountType { get; set; }
+    public int AccountType { get; set; }
+
 }

@@ -1,7 +1,9 @@
-﻿using FinanceControl.Common.Models;
+﻿using FinanceControl.API.ControllerDtos;
+using FinanceControl.Common.Models;
 using FinanceControl.Domain.Interfaces.Workers;
 using FinanceControl.Domain.Models.Business;
 using FinanceControl.Domain.Models.Responses;
+using Mapster;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FinanceControl.API.Controllers
@@ -32,14 +34,16 @@ namespace FinanceControl.API.Controllers
         }
 
         [HttpPost]
-        public ActionResult<ExpenseResponse> CreateExpense(Expense expense)
+        public ActionResult<ExpenseResponse> CreateExpense(ExpenseDto expenseDto)
         {
+            var expense = expenseDto.Adapt<Expense>();
             return WrappedCreatedExecute(_expenseWorker.CreateExpense, expense);
         }
 
         [HttpPut]
-        public ActionResult<ExpenseResponse> UpdateExpense(Expense expense)
+        public ActionResult<ExpenseResponse> UpdateExpense(ExpenseDto expenseDto)
         {
+            var expense = expenseDto.Adapt<Expense>();
             return WrappedOkExecute(_expenseWorker.UpdateExpense, expense);
         }
 
