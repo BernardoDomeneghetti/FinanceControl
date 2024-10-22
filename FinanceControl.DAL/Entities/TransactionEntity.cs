@@ -2,8 +2,10 @@ namespace FinanceControl.DAL.Entities;
 
 public class TransactionEntity
 {
-    public required int Id { get; set; } 
-    public required double Value { get; set; }
-    public required DateTime Date { get; set; }
-    public required int OriginAccountId { get; set; }
+    public int Id { get; set; }
+    public  Guid ExternalId { get; set; } 
+    public  double Value { get; set; }
+    public  DateTime Date { get; set; }
+    public  int OriginAccountId { get; set; }
+    public required AccountEntity OriginAccount { get; set; }
 }

@@ -7,8 +7,8 @@ namespace FinanceControl.Domain.Core.Validators
     {
         public RangeFilterValidation()
         {
-            RuleFor(range => range.Since).LessThan(range => range.Until);
-            RuleFor(range => range.Since).GreaterThan(range => range.Until.AddMonths(-3));
+            RuleFor(range => range.Since).LessThanOrEqualTo(range => range.Until);
+            RuleFor(range => range.Since).GreaterThanOrEqualTo(range => range.Until.AddMonths(-3));
         }
     }
 }

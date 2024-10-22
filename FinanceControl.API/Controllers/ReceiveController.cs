@@ -9,6 +9,7 @@ using FinanceControl.Domain.Models.Responses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 
 namespace FinanceControl.API.Controllers
 {
@@ -33,6 +34,10 @@ namespace FinanceControl.API.Controllers
             try
             {       
                 var response = await _ReceiveWorker.GetReceiveById(id);
+                if (response.Payload == null)
+                {
+                    return NotFound(response);
+                }
                 return Ok(response);
             }
             catch(BadRequestException ex)
@@ -51,12 +56,27 @@ namespace FinanceControl.API.Controllers
         }
 
         [HttpGet("List")]
-        public async Task<ActionResult<CollectionResponse<Receive>>> ListReceiveInDateRange([FromQuery] DateTime since, DateTime until)
+        public async Task<ActionResult<CollectionResponse<ReceiveDto>>> ListReceiveInDateRange([FromQuery] DateTime since, DateTime until)
         {
             try
             {
                 var rangefilter = new DateRangeFilter { Since = since, Until = until };
-                var response = await _ReceiveWorker.ListReceivesInRange(rangefilter);
+                var receives = await _ReceiveWorker.ListReceivesInRange(rangefilter);
+
+                var receiveDtos = _mapper.Map<List<ReceiveDto>>(receives);
+                
+                var response = new CollectionResponse<ReceiveDto>
+                {
+                    Payload = receiveDtos
+                };
+
+                if (receiveDtos.IsNullOrEmpty())
+                {
+                    response.Message = ResponseMessages.ObjectNotFound404;
+                    return NotFound(response);
+                }
+
+                response.Message = ResponseMessages.ObjectSuccessfullyRead200;
                 return Ok(response);
             }
             catch(BadRequestException ex)

@@ -63,9 +63,10 @@ namespace FinanceControl.DAL.Repositories
             query = query.Where(r => r.Date >= rangeFilter.Since && r.Date <= rangeFilter.Until);
 
             var receiveEntities = await query.ToListAsync();
-            var receives = _mapper.Map<Receive>(receiveEntities);
-            var receivesImmutableList = ImmutableList.Create(receives);
 
+            var receives = _mapper.Map<List<Receive>>(receiveEntities);
+            var receivesImmutableList = receives.ToImmutableList();
+            
             return receivesImmutableList;
         }
     }

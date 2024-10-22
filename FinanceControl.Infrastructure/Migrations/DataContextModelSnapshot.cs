@@ -17,7 +17,7 @@ namespace FinanceControl.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.8")
+                .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -81,6 +81,9 @@ namespace FinanceControl.Infrastructure.Migrations
                         .HasMaxLength(21)
                         .HasColumnType("nvarchar(21)");
 
+                    b.Property<Guid>("ExternalId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<int>("OriginAccountId")
                         .HasColumnType("int");
 
@@ -88,6 +91,8 @@ namespace FinanceControl.Infrastructure.Migrations
                         .HasColumnType("float");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OriginAccountId");
 
                     b.ToTable("Transactions");
 
@@ -106,6 +111,8 @@ namespace FinanceControl.Infrastructure.Migrations
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.HasIndex("CategoryId");
 
                     b.ToTable("Transactions", t =>
                         {
@@ -130,6 +137,8 @@ namespace FinanceControl.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.HasIndex("CategoryId");
+
                     b.HasDiscriminator().HasValue("ReceiveEntity");
                 });
 
@@ -140,7 +149,53 @@ namespace FinanceControl.Infrastructure.Migrations
                     b.Property<int>("TargetAccountId")
                         .HasColumnType("int");
 
+                    b.HasIndex("TargetAccountId");
+
                     b.HasDiscriminator().HasValue("TransferEntity");
+                });
+
+            modelBuilder.Entity("FinanceControl.DAL.Entities.TransactionEntity", b =>
+                {
+                    b.HasOne("FinanceControl.DAL.Entities.AccountEntity", "OriginAccount")
+                        .WithMany()
+                        .HasForeignKey("OriginAccountId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("OriginAccount");
+                });
+
+            modelBuilder.Entity("FinanceControl.DAL.Entities.ExpenseEntity", b =>
+                {
+                    b.HasOne("FinanceControl.DAL.Entities.CategoryEntity", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("FinanceControl.DAL.Entities.ReceiveEntity", b =>
+                {
+                    b.HasOne("FinanceControl.DAL.Entities.CategoryEntity", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("FinanceControl.DAL.Entities.TransferEntity", b =>
+                {
+                    b.HasOne("FinanceControl.DAL.Entities.AccountEntity", "TargetAccount")
+                        .WithMany()
+                        .HasForeignKey("TargetAccountId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("TargetAccount");
                 });
 #pragma warning restore 612, 618
         }

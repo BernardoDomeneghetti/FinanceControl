@@ -1,4 +1,5 @@
-﻿using FinanceControl.Common.Consts;
+﻿using System.Collections.Immutable;
+using FinanceControl.Common.Consts;
 using FinanceControl.Common.Models;
 using FinanceControl.Domain.Core.Validators;
 using FinanceControl.Domain.Exceptions;
@@ -29,6 +30,8 @@ namespace FinanceControl.Domain.Core.Workers
             if (!validation.IsValid)
                 throw new BadRequestException(ErrorMessages.ValidationFailure, validation.Errors);
 
+            receive.ExternalId = Guid.NewGuid();
+            
             await _ReceiveRepository.Create(receive);
 
             var result = new ReceiveResponse
@@ -57,22 +60,15 @@ namespace FinanceControl.Domain.Core.Workers
             return result;
         }
 
-        public async Task<CollectionResponse<Receive>> ListReceivesInRange(DateRangeFilter rangefilter)
+        public async Task<ImmutableList<Receive>> ListReceivesInRange(DateRangeFilter rangefilter)
         {
             var validation = _rangeFilterValidator.Validate(rangefilter);
 
             if (!validation.IsValid)
                 throw new BadRequestException(ErrorMessages.ValidationFailure, validation.Errors);
-
-            var Receives = await _ReceiveRepository.List(rangefilter);
-
-            var result = new CollectionResponse<Receive>
-            {
-                Message = ResponseMessages.ObjectSuccessfullyRead200,
-                Payload = [.. Receives]
-            };
-
-            return result;
+            
+            var receives = await _ReceiveRepository.List(rangefilter);
+            return receives;
         }
 
         public async Task<ReceiveResponse> UpdateReceive(Receive receive)

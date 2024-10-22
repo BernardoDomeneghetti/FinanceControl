@@ -1,4 +1,5 @@
-﻿using FinanceControl.Common.Consts;
+﻿using System.Collections.Immutable;
+using FinanceControl.Common.Consts;
 using FinanceControl.Common.Models;
 using FinanceControl.Domain.Core.Validators;
 using FinanceControl.Domain.Exceptions;
@@ -29,6 +30,8 @@ namespace FinanceControl.Domain.Core.Workers
             if (!validation.IsValid)
                 throw new BadRequestException(ErrorMessages.ValidationFailure, validation.Errors);
 
+            expense.ExternalId = Guid.NewGuid();
+
             await _expenseRepository.Create(expense);
 
             var result = new ExpenseResponse
@@ -47,17 +50,20 @@ namespace FinanceControl.Domain.Core.Workers
 
         public async Task<ExpenseResponse> GetExpenseById(Guid id)
         {
-            await _expenseRepository.Read(id);
+            var expense = await _expenseRepository.Read(id);
 
             var result = new ExpenseResponse
             {
-                Message = ResponseMessages.ObjectSuccessfullyCreated201,
+                Message = expense != null 
+                    ? ResponseMessages.ObjectSuccessfullyRead200 
+                    : ResponseMessages.ObjectNotFound404,
+                Payload = expense
             };
 
             return result;
         }
 
-        public async Task<CollectionResponse<Expense>> ListExpensesInRange(DateRangeFilter rangefilter)
+        public async Task<ImmutableList<Expense>> ListExpensesInRange(DateRangeFilter rangefilter)
         {
             var validation = _rangeFilterValidator.Validate(rangefilter);
 
@@ -65,14 +71,7 @@ namespace FinanceControl.Domain.Core.Workers
                 throw new BadRequestException(ErrorMessages.ValidationFailure, validation.Errors);
 
             var expenses = await _expenseRepository.List(rangefilter);
-
-            var result = new CollectionResponse<Expense>
-            {
-                Message = ResponseMessages.ObjectSuccessfullyCreated201,
-                Payload = [.. expenses]
-            };
-
-            return result;
+            return expenses;
         }
 
         public async Task<ExpenseResponse> UpdateExpense(Expense expense)

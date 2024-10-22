@@ -1,5 +1,6 @@
 ﻿
 
+using System.Collections.Immutable;
 using FinanceControl.Common.Models;
 using FinanceControl.Domain.Models.Business;
 using FinanceControl.Domain.Models.Responses;
@@ -16,6 +17,6 @@ namespace FinanceControl.Domain.Interfaces.Workers
 
         Task DeleteReceive(Guid id);
 
-        Task<CollectionResponse<Receive>> ListReceivesInRange(DateRangeFilter rangefilter);
+        Task<ImmutableList<Receive>> ListReceivesInRange(DateRangeFilter rangefilter);
     }
 }

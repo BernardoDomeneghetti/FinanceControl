@@ -1,5 +1,6 @@
 ﻿
 
+using System.Collections.Immutable;
 using FinanceControl.Common.Models;
 using FinanceControl.Domain.Models.Business;
 using FinanceControl.Domain.Models.Responses;
@@ -16,6 +17,6 @@ namespace FinanceControl.Domain.Interfaces.Workers
 
         Task DeleteExpense(Guid id);
 
-        Task<CollectionResponse<Expense>> ListExpensesInRange(DateRangeFilter rangefilter);
+        Task<ImmutableList<Expense>> ListExpensesInRange(DateRangeFilter rangefilter);
     }
 }
