@@ -1,12 +1,15 @@
 ﻿using System.Collections.Immutable;
+using AutoMapper;
 using FinanceControl.Common.Consts;
 using FinanceControl.Common.Models;
 using FinanceControl.Domain.Core.Validators;
-using FinanceControl.Domain.Exceptions;
+using FinanceControl.Domain.Helpers;
 using FinanceControl.Domain.Interfaces.Repositories;
 using FinanceControl.Domain.Interfaces.Workers;
 using FinanceControl.Domain.Models.Business;
-using FinanceControl.Domain.Models.Responses;
+using FinanceControl.Domain.Models.DTOs;
+using FinanceControl.Domain.Models.DTOs.BaseDtos;
+using FinanceControl.Domain.Models.DTOs.Reponses;
 
 namespace FinanceControl.Domain.Core.Workers
 {
@@ -15,32 +18,43 @@ namespace FinanceControl.Domain.Core.Workers
         private readonly IReceiveRepository _ReceiveRepository;
         private readonly ReceiveValidator _ReceiveValidator;
         private readonly RangeFilterValidation _rangeFilterValidator;
+        private readonly IMapper _mapper;
 
-        public ReceiveWorker(IReceiveRepository ReceiveRepository)
+        public ReceiveWorker(IReceiveRepository ReceiveRepository, IMapper mapper)
         {
             _ReceiveRepository = ReceiveRepository;
-            _ReceiveValidator = new ReceiveValidator(); 
+            _ReceiveValidator = new ReceiveValidator();
             _rangeFilterValidator = new RangeFilterValidation();
+            _mapper = mapper;
         }
 
-        public async Task<ReceiveResponse> CreateReceive(Receive receive)
+        public async Task<Response<ReceiveResponse>> CreateReceive(Receive receive)
         {
             var validation = _ReceiveValidator.Validate(receive);
 
             if (!validation.IsValid)
-                throw new BadRequestException(ErrorMessages.ValidationFailure, validation.Errors);
+            {
+                var errors = validation.Errors.ToImmutableList();
+                return new Response<ReceiveResponse>
+                {
+                    Code = ResponseHttpCode.BadRequest,
+                    Message = ValidationMessageFactory.GetValidationMessage(errors)
+                };
+            }
 
             receive.ExternalId = Guid.NewGuid();
+
+                await _ReceiveRepository.Create(receive);
+
+                var result = new Response<ReceiveResponse>
+                {
+                    Code = ResponseHttpCode.Created,
+                    Message = ResponseMessages.ObjectSuccessfullyCreated201, 
+                    Payload = _mapper.Map<ReceiveResponse>(receive)
+                };
+
+                return result;
             
-            await _ReceiveRepository.Create(receive);
-
-            var result = new ReceiveResponse
-            {
-                Message = ResponseMessages.ObjectSuccessfullyCreated201,
-                Payload = receive
-            };
-
-            return result;
         }
 
         public async Task DeleteReceive(Guid id)
@@ -48,45 +62,91 @@ namespace FinanceControl.Domain.Core.Workers
             await _ReceiveRepository.Delete(id);
         }
 
-        public async Task<ReceiveResponse> GetReceiveById(Guid id)
+        public async Task<Response<ReceiveResponse>> GetReceiveById(Guid id)
         {
-            await _ReceiveRepository.Read(id);
-
-            var result = new ReceiveResponse
+            try
             {
-                Message = ResponseMessages.ObjectSuccessfullyRead200,
-            };
+                var Receive = await _ReceiveRepository.Read(id);
 
-            return result;
+                var result = new Response<ReceiveResponse>
+                {
+                    Code = ResponseHttpCode.Created,
+                    Message = ResponseMessages.ObjectSuccessfullyCreated201, 
+                    Payload = _mapper.Map<ReceiveResponse>(Receive)
+                };
+
+                return result;
+            }
+            catch (KeyNotFoundException)
+            {
+                return new Response<ReceiveResponse>
+                {
+                    Code = ResponseHttpCode.NotFound,
+                    Message = ResponseMessages.ObjectNotFound404
+                };
+            }
         }
 
-        public async Task<ImmutableList<Receive>> ListReceivesInRange(DateRangeFilter rangefilter)
+        public async Task<CollectionResponse<ReceiveResponse>> ListReceivesInRange(DateRangeFilter rangefilter)
         {
-            var validation = _rangeFilterValidator.Validate(rangefilter);
+            try
+            {
+                var Receives = await _ReceiveRepository.List(rangefilter);
 
-            if (!validation.IsValid)
-                throw new BadRequestException(ErrorMessages.ValidationFailure, validation.Errors);
-            
-            var receives = await _ReceiveRepository.List(rangefilter);
-            return receives;
+                var result = new CollectionResponse<ReceiveResponse>
+                {
+                    Code = ResponseHttpCode.Created,
+                    Message = ResponseMessages.ObjectSuccessfullyCreated201, 
+                    Payload = _mapper.Map<List<ReceiveResponse>>(Receives)
+                };
+
+                return result;
+            }
+            catch (KeyNotFoundException)
+            {
+                return new CollectionResponse<ReceiveResponse>
+                {
+                    Code = ResponseHttpCode.NotFound,
+                    Message = ResponseMessages.ObjectNotFound404
+                };
+            }
         }
 
-        public async Task<ReceiveResponse> UpdateReceive(Receive receive)
+        public async Task<Response<ReceiveResponse>> UpdateReceive(Receive receive)
         {
             var validation = _ReceiveValidator.Validate(receive);
 
             if (!validation.IsValid)
-                throw new BadRequestException(ErrorMessages.ValidationFailure, validation.Errors);
-
-            await _ReceiveRepository.Update(receive);
-
-            var result = new ReceiveResponse
             {
-                Message = ResponseMessages.ObjectSussessfullyUpdated200,
-                Payload = receive
-            };
+                var errors = validation.Errors.ToImmutableList();
+                return new Response<ReceiveResponse>
+                {
+                    Code = ResponseHttpCode.BadRequest,
+                    Message = ValidationMessageFactory.GetValidationMessage(errors)
+                };
+            }
+            
+            try
+            {
+                await _ReceiveRepository.Update(receive);
 
-            return result;
+                var result = new Response<ReceiveResponse>
+                {
+                    Code = ResponseHttpCode.Created,
+                    Message = ResponseMessages.ObjectSuccessfullyCreated201, 
+                    Payload = _mapper.Map<ReceiveResponse>(receive)
+                };
+
+                return result;
+            }
+            catch (KeyNotFoundException)
+            {
+                return new Response<ReceiveResponse>
+                {
+                    Code = ResponseHttpCode.NotFound,
+                    Message = ResponseMessages.ObjectNotFound404
+                };
+            }
         }
     }
 }

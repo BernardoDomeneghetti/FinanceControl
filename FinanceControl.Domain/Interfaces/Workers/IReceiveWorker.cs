@@ -1,22 +1,20 @@
-﻿
-
-using System.Collections.Immutable;
-using FinanceControl.Common.Models;
+﻿using FinanceControl.Common.Models;
 using FinanceControl.Domain.Models.Business;
-using FinanceControl.Domain.Models.Responses;
+using FinanceControl.Domain.Models.DTOs.BaseDtos;
+using FinanceControl.Domain.Models.DTOs.Reponses;
 
 namespace FinanceControl.Domain.Interfaces.Workers
 {
     public interface IReceiveWorker
     {
-        Task<ReceiveResponse> CreateReceive(Receive receive);
+        Task<Response<ReceiveResponse>> CreateReceive(Receive receive);
 
-        Task<ReceiveResponse> GetReceiveById(Guid id);
+        Task<Response<ReceiveResponse>> GetReceiveById(Guid id);
 
-        Task<ReceiveResponse> UpdateReceive(Receive receive);
+        Task<Response<ReceiveResponse>> UpdateReceive(Receive receive);
 
         Task DeleteReceive(Guid id);
 
-        Task<ImmutableList<Receive>> ListReceivesInRange(DateRangeFilter rangefilter);
+        Task<CollectionResponse<ReceiveResponse>> ListReceivesInRange(DateRangeFilter rangefilter);
     }
 }

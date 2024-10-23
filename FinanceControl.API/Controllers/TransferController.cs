@@ -1,59 +1,117 @@
-﻿
-// using AutoMapper;
-// using FinanceControl.API.ControllerDtos;
-// using FinanceControl.Common.Models;
-// using FinanceControl.Domain.Interfaces.Workers;
-// using FinanceControl.Domain.Models.Business;
-// using FinanceControl.Domain.Models.Responses;
-// using Microsoft.AspNetCore.Mvc;
-// using Microsoft.Extensions.Logging;
+﻿using AutoMapper;
+using FinanceControl.Common.Consts;
+using FinanceControl.Common.Models;
+using FinanceControl.Domain.Exceptions;
+using FinanceControl.Domain.Interfaces.Workers;
+using FinanceControl.Domain.Models.Business;
+using FinanceControl.Domain.Models.DTOs.BaseDtos;
+using FinanceControl.Domain.Models.DTOs.Reponses;
+using FinanceControl.Domain.Models.DTOs.Requests;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
-// namespace FinanceControl.API.Controllers
-// {
-//     [ApiController]
-//     [Route("/api/v1/[Controller]")]
-//     public class TransferController : CustomBaseController<TransferController>
-//     {
-//         private readonly ITransferWorker _TransferWorker;
-//         private readonly IMapper _mapper;
-//         public TransferController(ITransferWorker TransferWorker, ILogger<TransferController> logger, IMapper mapper) : base(logger)
-//         {
-//             _TransferWorker = TransferWorker;
-//             _mapper = mapper;
-//         }
+namespace FinanceControl.API.Controllers
+{
+    [ApiController]
+    [Route("/api/v1/[Controller]")]
+    public class TransferController : BaseCustomController
+    {
+        private readonly ITransferWorker _TransferWorker;
+        private readonly IMapper _mapper;
+        private readonly ILogger<TransferController> _logger;
 
-//         [HttpGet]
-//         public ActionResult<TransferResponse> GetTransferById([FromQuery] Guid id)
-//         {
-//             return WrappedOkExecute(_TransferWorker.GetTransferById, id);
-//         }
 
-//         [HttpGet("List")]
-//         public ActionResult<CollectionResponse<Transfer>> ListTransferInDateRange([FromQuery] DateTime since, DateTime until)
-//         {
-//             var rangefilter = new DateRangeFilter { Since = since, Until = until };
+        public TransferController(ITransferWorker TransferWorker, IMapper mapper , ILogger<TransferController> logger)
+        {
+            _TransferWorker = TransferWorker;
+            _mapper = mapper;
+            _logger = logger;
+        }
 
-//             return WrappedOkExecute(_TransferWorker.ListTransfersInRange, rangefilter);
-//         }
+        [HttpGet]
+        public async Task<ActionResult<Response<TransferResponse>>> GetTransferById([FromQuery] Guid id)
+        {
+            try
+            {
+                var response = await _TransferWorker.GetTransferById(id);
+                return HandleResponse(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex.StackTrace);
+                return Problem(ResponseMessages.InternalServerError500);
+            }
+        }
 
-//         [HttpPost]
-//         public ActionResult<TransferResponse> CreateTransfer(TransferDto transferDto)
-//         {
-//             var transfer = _mapper.Map<Transfer>(transferDto);
-//             return WrappedCreateExecute(_TransferWorker.CreateTransfer, transfer);
-//         }
+        [HttpGet("List")]
+        public async Task<ActionResult<CollectionResponse<TransferResponse>>> ListTransferInDateRange([FromQuery] DateTime since, DateTime until)
+        {
+            var rangefilter = new DateRangeFilter { Since = since, Until = until };
 
-//         [HttpPut]
-//         public ActionResult<TransferResponse> UpdateTransfer(TransferDto transferDto)
-//         {
-//             var transfer = _mapper.Map<Transfer>(transferDto);
-//             return WrappedOkExecute(_TransferWorker.UpdateTransfer, transfer);
-//         }
+            try
+            {
+                var response = await _TransferWorker.ListTransfersInRange(rangefilter);
+                return HandleResponse(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex.StackTrace);
+                return Problem(ResponseMessages.InternalServerError500);
+            }
+        } 
 
-//         [HttpDelete]
-//         public ActionResult<TransferResponse> DeleteTransfer(Guid id)
-//         {
-//             return WrappedDeletedExecute(_TransferWorker.DeleteTransfer, id);
-//         }
-//     }
-// }
+        [HttpPost]
+        public async Task<ActionResult<TransferResponse>> CreateTransfer(TransferRequest transferDto)
+        {
+            var Transfer = _mapper.Map<Transfer>(transferDto);
+
+            try
+            {
+                var response = await _TransferWorker.CreateTransfer(Transfer);
+                return HandleResponse(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex.StackTrace);
+                return Problem(ResponseMessages.InternalServerError500);
+            }
+        }
+
+        [HttpPut]
+        public async Task<ActionResult<TransferResponse>> UpdateTransfer(TransferRequest transferDto)
+        {
+            var Transfer = _mapper.Map<Transfer>(transferDto);
+
+            try
+            {
+                var response = await _TransferWorker.UpdateTransfer(Transfer);
+                return HandleResponse(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex.StackTrace);
+                return Problem(ResponseMessages.InternalServerError500);
+            }
+        }
+
+        [HttpDelete]
+        public async Task<ActionResult<TransferResponse>> DeleteTransfer(Guid id)
+        {
+            try
+            {
+                await _TransferWorker.DeleteTransfer(id);
+                return Ok();
+            }
+            catch (BadRequestException ex)
+            {
+                _logger.LogError(ex.Message, ex.StackTrace);
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex.StackTrace);
+                return Problem(ResponseMessages.InternalServerError500);
+            }
+        }
+    }
+}

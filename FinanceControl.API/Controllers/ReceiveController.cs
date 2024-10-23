@@ -1,27 +1,27 @@
 ﻿using AutoMapper;
-using FinanceControl.API.ControllerDtos;
 using FinanceControl.Common.Consts;
 using FinanceControl.Common.Models;
 using FinanceControl.Domain.Exceptions;
 using FinanceControl.Domain.Interfaces.Workers;
 using FinanceControl.Domain.Models.Business;
-using FinanceControl.Domain.Models.Responses;
-using Microsoft.AspNetCore.Http;
+using FinanceControl.Domain.Models.DTOs.BaseDtos;
+using FinanceControl.Domain.Models.DTOs.Reponses;
+using FinanceControl.Domain.Models.DTOs.Requests;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 
 namespace FinanceControl.API.Controllers
 {
     [ApiController]
     [Route("/api/v1/[Controller]")]
-    public class ReceiveController : ControllerBase
+    public class ReceiveController : BaseCustomController
     {
         private readonly IReceiveWorker _ReceiveWorker;
         private readonly IMapper _mapper;
         private readonly ILogger<ReceiveController> _logger;
 
-        public ReceiveController(IReceiveWorker ReceiveWorker, IMapper mapper, ILogger<ReceiveController> logger)
+
+        public ReceiveController(IReceiveWorker ReceiveWorker, IMapper mapper , ILogger<ReceiveController> logger)
         {
             _ReceiveWorker = ReceiveWorker;
             _mapper = mapper;
@@ -29,117 +29,68 @@ namespace FinanceControl.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<ReceiveResponse>> GetReceiveById([FromQuery] Guid id)
+        public async Task<ActionResult<Response<ReceiveResponse>>> GetReceiveById([FromQuery] Guid id)
         {
             try
-            {       
+            {
                 var response = await _ReceiveWorker.GetReceiveById(id);
-                if (response.Payload == null)
-                {
-                    return NotFound(response);
-                }
-                return Ok(response);
+                return HandleResponse(response);
             }
-            catch(BadRequestException ex)
+            catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
-                return BadRequest(ex.Message);
-            }
-            catch(Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                return StatusCode(
-                    StatusCodes.Status500InternalServerError,
-                    ResponseMessages.InternalServerError500
-                );
+                _logger.LogError(ex.Message, ex.StackTrace);
+                return Problem(ResponseMessages.InternalServerError500);
             }
         }
 
         [HttpGet("List")]
-        public async Task<ActionResult<CollectionResponse<ReceiveDto>>> ListReceiveInDateRange([FromQuery] DateTime since, DateTime until)
+        public async Task<ActionResult<CollectionResponse<ReceiveResponse>>> ListReceiveInDateRange([FromQuery] DateTime since, DateTime until)
         {
+            var rangefilter = new DateRangeFilter { Since = since, Until = until };
+
             try
             {
-                var rangefilter = new DateRangeFilter { Since = since, Until = until };
-                var receives = await _ReceiveWorker.ListReceivesInRange(rangefilter);
-
-                var receiveDtos = _mapper.Map<List<ReceiveDto>>(receives);
-                
-                var response = new CollectionResponse<ReceiveDto>
-                {
-                    Payload = receiveDtos
-                };
-
-                if (receiveDtos.IsNullOrEmpty())
-                {
-                    response.Message = ResponseMessages.ObjectNotFound404;
-                    return NotFound(response);
-                }
-
-                response.Message = ResponseMessages.ObjectSuccessfullyRead200;
-                return Ok(response);
+                var response = await _ReceiveWorker.ListReceivesInRange(rangefilter);
+                return HandleResponse(response);
             }
-            catch(BadRequestException ex)
+            catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
-                return BadRequest(ex.Message);
+                _logger.LogError(ex.Message, ex.StackTrace);
+                return Problem(ResponseMessages.InternalServerError500);
             }
-            catch(Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                return StatusCode(
-                    StatusCodes.Status500InternalServerError,
-                    ResponseMessages.InternalServerError500
-                );
-            }
-        }
+        } 
 
         [HttpPost]
-        public async Task<ActionResult<ReceiveResponse>> CreateReceive(ReceiveDto receiveDto)
+        public async Task<ActionResult<ReceiveResponse>> CreateReceive(ReceiveRequest receiveDto)
         {
+            var Receive = _mapper.Map<Receive>(receiveDto);
+
             try
             {
-                var receive = _mapper.Map<Receive>(receiveDto);
-                var response = await _ReceiveWorker.CreateReceive(receive);
-                return Ok(response);
+                var response = await _ReceiveWorker.CreateReceive(Receive);
+                return HandleResponse(response);
             }
-            catch(BadRequestException ex)
+            catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
-                return BadRequest(ex.Message);
+                _logger.LogError(ex.Message, ex.StackTrace);
+                return Problem(ResponseMessages.InternalServerError500);
             }
-            catch(Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                return StatusCode(
-                    StatusCodes.Status500InternalServerError,
-                    ResponseMessages.InternalServerError500
-                );
-            }
-
         }
 
         [HttpPut]
-        public async Task<ActionResult<ReceiveResponse>> UpdateReceive(ReceiveDto receiveDto)
+        public async Task<ActionResult<ReceiveResponse>> UpdateReceive(ReceiveRequest receiveDto)
         {
+            var Receive = _mapper.Map<Receive>(receiveDto);
+
             try
             {
-                var receive = _mapper.Map<Receive>(receiveDto);
-                var response = await _ReceiveWorker.UpdateReceive(receive);
-                return Ok(response);
+                var response = await _ReceiveWorker.UpdateReceive(Receive);
+                return HandleResponse(response);
             }
-            catch(BadRequestException ex)
+            catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
-                return BadRequest(ex.Message);
-            }
-            catch(Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                return StatusCode(
-                    StatusCodes.Status500InternalServerError,
-                    ResponseMessages.InternalServerError500
-                );
+                _logger.LogError(ex.Message, ex.StackTrace);
+                return Problem(ResponseMessages.InternalServerError500);
             }
         }
 
@@ -149,22 +100,18 @@ namespace FinanceControl.API.Controllers
             try
             {
                 await _ReceiveWorker.DeleteReceive(id);
-                return Ok(ResponseMessages.ObjectSussessfullyDeleted204);
+                return Ok();
             }
-            catch(BadRequestException ex)
+            catch (BadRequestException ex)
             {
-                _logger.LogError(ex.Message);
+                _logger.LogError(ex.Message, ex.StackTrace);
                 return BadRequest(ex.Message);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
-                return StatusCode(
-                    StatusCodes.Status500InternalServerError,
-                    ResponseMessages.InternalServerError500
-                );
+                _logger.LogError(ex.Message, ex.StackTrace);
+                return Problem(ResponseMessages.InternalServerError500);
             }
-            
         }
     }
 }

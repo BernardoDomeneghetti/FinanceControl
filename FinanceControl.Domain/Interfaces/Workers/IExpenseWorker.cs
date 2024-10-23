@@ -1,22 +1,22 @@
 ﻿
 
-using System.Collections.Immutable;
 using FinanceControl.Common.Models;
 using FinanceControl.Domain.Models.Business;
-using FinanceControl.Domain.Models.Responses;
+using FinanceControl.Domain.Models.DTOs.BaseDtos;
+using FinanceControl.Domain.Models.DTOs.Reponses;
 
 namespace FinanceControl.Domain.Interfaces.Workers
 {
     public interface IExpenseWorker
     {
-        Task<ExpenseResponse> CreateExpense(Expense expense);
+        Task<Response<ExpenseResponse>> CreateExpense(Expense expense);
 
-        Task<ExpenseResponse> GetExpenseById(Guid id);
+        Task<Response<ExpenseResponse>> GetExpenseById(Guid id);
 
-        Task<ExpenseResponse> UpdateExpense(Expense expense);
+        Task<Response<ExpenseResponse>> UpdateExpense(Expense expense);
 
         Task DeleteExpense(Guid id);
 
-        Task<ImmutableList<Expense>> ListExpensesInRange(DateRangeFilter rangefilter);
+        Task<CollectionResponse<ExpenseResponse>> ListExpensesInRange(DateRangeFilter rangefilter);
     }
 }

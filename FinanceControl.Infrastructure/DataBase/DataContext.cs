@@ -1,8 +1,6 @@
 using FinanceControl.DAL.Interfaces;
 using FinanceControl.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
-using System.Transactions;
-using FinanceControl.Domain.Models.Business;
 
 namespace FinanceControl.Infrastrutcture.DataBase
 {

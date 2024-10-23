@@ -1,5 +1,3 @@
-using FinanceControl.Domain.Models.Business;
-
 namespace FinanceControl.DAL.Entities;
 
 public class ExpenseEntity: TransactionEntity

@@ -8,5 +8,5 @@ public class ErrorMessages
     public const string RawException = "Exceção não tratada capturada em {0} - DateTime: {1}";
     public const string SingletonViolated = "A referência já está preenchida";
     public const string TransactionValidationValueGreaterThanZero = "O valor da transação deve ser superior a zero";
-    public const string ValidationFailure = "Foram encontrados problemas no payload durante a validação";    
+    public const string ValidationFailure = "Foram encontrados problemas no payload durante a validação: {0}";    
 }

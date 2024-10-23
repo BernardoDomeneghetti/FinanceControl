@@ -1,12 +1,15 @@
 ﻿using System.Collections.Immutable;
+using AutoMapper;
 using FinanceControl.Common.Consts;
 using FinanceControl.Common.Models;
 using FinanceControl.Domain.Core.Validators;
-using FinanceControl.Domain.Exceptions;
+using FinanceControl.Domain.Helpers;
 using FinanceControl.Domain.Interfaces.Repositories;
 using FinanceControl.Domain.Interfaces.Workers;
 using FinanceControl.Domain.Models.Business;
-using FinanceControl.Domain.Models.Responses;
+using FinanceControl.Domain.Models.DTOs;
+using FinanceControl.Domain.Models.DTOs.BaseDtos;
+using FinanceControl.Domain.Models.DTOs.Reponses;
 
 namespace FinanceControl.Domain.Core.Workers
 {
@@ -15,32 +18,43 @@ namespace FinanceControl.Domain.Core.Workers
         private readonly IExpenseRepository _expenseRepository;
         private readonly ExpenseValidator _expenseValidator;
         private readonly RangeFilterValidation _rangeFilterValidator;
+        private readonly IMapper _mapper;
 
-        public ExpenseWorker(IExpenseRepository expenseRepository)
+        public ExpenseWorker(IExpenseRepository expenseRepository, IMapper mapper)
         {
             _expenseRepository = expenseRepository;
             _expenseValidator = new ExpenseValidator();
             _rangeFilterValidator = new RangeFilterValidation();
+            _mapper = mapper;
         }
 
-        public async Task<ExpenseResponse> CreateExpense(Expense expense)
+        public async Task<Response<ExpenseResponse>> CreateExpense(Expense expense)
         {
             var validation = _expenseValidator.Validate(expense);
 
             if (!validation.IsValid)
-                throw new BadRequestException(ErrorMessages.ValidationFailure, validation.Errors);
+            {
+                var errors = validation.Errors.ToImmutableList();
+                return new Response<ExpenseResponse>
+                {
+                    Code = ResponseHttpCode.BadRequest,
+                    Message = ValidationMessageFactory.GetValidationMessage(errors)
+                };
+            }
 
             expense.ExternalId = Guid.NewGuid();
 
-            await _expenseRepository.Create(expense);
+                await _expenseRepository.Create(expense);
 
-            var result = new ExpenseResponse
-            {
-                Message = ResponseMessages.ObjectSuccessfullyCreated201, 
-                Payload = expense
-            };
+                var result = new Response<ExpenseResponse>
+                {
+                    Code = ResponseHttpCode.Created,
+                    Message = ResponseMessages.ObjectSuccessfullyCreated201, 
+                    Payload = _mapper.Map<ExpenseResponse>(expense)
+                };
 
-            return result;
+                return result;
+            
         }
 
         public async Task DeleteExpense(Guid id)
@@ -48,48 +62,102 @@ namespace FinanceControl.Domain.Core.Workers
             await _expenseRepository.Delete(id);
         }
 
-        public async Task<ExpenseResponse> GetExpenseById(Guid id)
+        public async Task<Response<ExpenseResponse>> GetExpenseById(Guid id)
         {
-            var expense = await _expenseRepository.Read(id);
-
-            var result = new ExpenseResponse
+            try
             {
-                Message = expense != null 
-                    ? ResponseMessages.ObjectSuccessfullyRead200 
-                    : ResponseMessages.ObjectNotFound404,
-                Payload = expense
-            };
+                var expense = await _expenseRepository.Read(id);
 
-            return result;
+                var result = new Response<ExpenseResponse>
+                {
+                    Code = ResponseHttpCode.Created,
+                    Message = ResponseMessages.ObjectSuccessfullyCreated201, 
+                    Payload = _mapper.Map<ExpenseResponse>(expense)
+                };
+
+                return result;
+            }
+            catch (KeyNotFoundException)
+            {
+                return new Response<ExpenseResponse>
+                {
+                    Code = ResponseHttpCode.NotFound,
+                    Message = ResponseMessages.ObjectNotFound404
+                };
+            }
         }
 
-        public async Task<ImmutableList<Expense>> ListExpensesInRange(DateRangeFilter rangefilter)
+        public async Task<CollectionResponse<ExpenseResponse>> ListExpensesInRange(DateRangeFilter rangefilter)
         {
             var validation = _rangeFilterValidator.Validate(rangefilter);
 
             if (!validation.IsValid)
-                throw new BadRequestException(ErrorMessages.ValidationFailure, validation.Errors);
+            {
+                var errors = validation.Errors.ToImmutableList();
+                return new CollectionResponse<ExpenseResponse>
+                {
+                    Code = ResponseHttpCode.BadRequest,
+                    Message = ValidationMessageFactory.GetValidationMessage(errors)
+                };
+            }
+            try
+            {
+                var expenses = await _expenseRepository.List(rangefilter);
 
-            var expenses = await _expenseRepository.List(rangefilter);
-            return expenses;
+                var result = new CollectionResponse<ExpenseResponse>
+                {
+                    Code = ResponseHttpCode.Created,
+                    Message = ResponseMessages.ObjectSuccessfullyCreated201, 
+                    Payload = _mapper.Map<List<ExpenseResponse>>(expenses)
+                };
+
+                return result;
+            }
+            catch (KeyNotFoundException)
+            {
+                return new CollectionResponse<ExpenseResponse>
+                {
+                    Code = ResponseHttpCode.NotFound,
+                    Message = ResponseMessages.ObjectNotFound404
+                };
+            }
         }
 
-        public async Task<ExpenseResponse> UpdateExpense(Expense expense)
+        public async Task<Response<ExpenseResponse>> UpdateExpense(Expense expense)
         {
             var validation = _expenseValidator.Validate(expense);
 
             if (!validation.IsValid)
-                throw new BadRequestException(ErrorMessages.ValidationFailure, validation.Errors);
-
-            await _expenseRepository.Update(expense);
-
-            var result = new ExpenseResponse
             {
-                Message = ResponseMessages.ObjectSuccessfullyCreated201,
-                Payload = expense
-            };
+                var errors = validation.Errors.ToImmutableList();
+                return new Response<ExpenseResponse>
+                {
+                    Code = ResponseHttpCode.BadRequest,
+                    Message = ValidationMessageFactory.GetValidationMessage(errors)
+                };
+            }
 
-            return result;
+            try
+            {
+                await _expenseRepository.Update(expense);
+
+                var result = new Response<ExpenseResponse>
+                {
+                    Code = ResponseHttpCode.Created,
+                    Message = ResponseMessages.ObjectSuccessfullyCreated201, 
+                    Payload = _mapper.Map<ExpenseResponse>(expense)
+                };
+
+                return result;
+            }
+            catch (KeyNotFoundException)
+            {
+                return new Response<ExpenseResponse>
+                {
+                    Code = ResponseHttpCode.NotFound,
+                    Message = ResponseMessages.ObjectNotFound404
+                };
+            }
         }
     }
 }

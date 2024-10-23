@@ -6,7 +6,7 @@ using FinanceControl.Domain.Interfaces.Workers;
 using FinanceControl.Domain.Interfaces.Repositories;
 using FinanceControl.Domain.Core.Workers;
 using FinanceControl.DAL.Entities;
-using FinanceControl.API.ControllerDtos;
+using FinanceControl.Domain.Models.DTOs;
 
 namespace FinanceControl.Configuration;
 
@@ -23,8 +23,6 @@ public class Program
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
-
-        services.AddAutoMapper(typeof(ControllerDtosMappingProfile));
 
         ConfigureServices(services, builder);
 
@@ -69,7 +67,7 @@ public class Program
         #endregion
 
         #region Mapper
-        services.AddAutoMapper(typeof(DomainToEntityMappingProfile));
+        services.AddAutoMapper(typeof(DomainToEntityMappingProfile), typeof(DtosMappingProfile));
         #endregion
     }
 }

@@ -1,20 +1,20 @@
 ﻿using AutoMapper;
-using FinanceControl.API.ControllerDtos;
 using FinanceControl.Common.Consts;
 using FinanceControl.Common.Models;
 using FinanceControl.Domain.Exceptions;
 using FinanceControl.Domain.Interfaces.Workers;
 using FinanceControl.Domain.Models.Business;
-using FinanceControl.Domain.Models.Responses;
+using FinanceControl.Domain.Models.DTOs.BaseDtos;
+using FinanceControl.Domain.Models.DTOs.Reponses;
+using FinanceControl.Domain.Models.DTOs.Requests;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 
 namespace FinanceControl.API.Controllers
 {
     [ApiController]
     [Route("/api/v1/[Controller]")]
-    public class ExpenseController : ControllerBase
+    public class ExpenseController : BaseCustomController
     {
         private readonly IExpenseWorker _expenseWorker;
         private readonly IMapper _mapper;
@@ -29,23 +29,12 @@ namespace FinanceControl.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<ExpenseResponse>> GetExpenseById([FromQuery] Guid id)
+        public async Task<ActionResult<Response<ExpenseResponse>>> GetExpenseById([FromQuery] Guid id)
         {
             try
             {
                 var response = await _expenseWorker.GetExpenseById(id);
-
-                if (response.Payload == null)
-                {
-                    return NotFound(response);
-                }
-
-                return Ok(response);
-            }
-            catch (BadRequestException ex)
-            {
-                _logger.LogError(ex.Message, ex.StackTrace);
-                return BadRequest(ex.Message);
+                return HandleResponse(response);
             }
             catch (Exception ex)
             {
@@ -55,35 +44,14 @@ namespace FinanceControl.API.Controllers
         }
 
         [HttpGet("List")]
-        public async Task<ActionResult<CollectionResponse<ExpenseDto>>> ListExpenseInDateRange([FromQuery] DateTime since, DateTime until)
+        public async Task<ActionResult<CollectionResponse<ExpenseResponse>>> ListExpenseInDateRange([FromQuery] DateTime since, DateTime until)
         {
-            
             var rangefilter = new DateRangeFilter { Since = since, Until = until };
 
             try
             {
-                var expenses = await _expenseWorker.ListExpensesInRange(rangefilter);
-
-                var expensesDtos = _mapper.Map<List<ExpenseDto>>(expenses);
-                
-                var response = new CollectionResponse<ExpenseDto>
-                {
-                    Payload = expensesDtos
-                };
-
-                if (expensesDtos.IsNullOrEmpty())
-                {
-                    response.Message = ResponseMessages.ObjectNotFound404;
-                    return NotFound(response);
-                }
-
-                response.Message = ResponseMessages.ObjectSuccessfullyRead200;
-                return Ok(response);
-            }
-            catch(BadRequestException ex)
-            {
-                _logger.LogError(ex.Message, ex.StackTrace);
-                return BadRequest(ex.Message);
+                var response = await _expenseWorker.ListExpensesInRange(rangefilter);
+                return HandleResponse(response);
             }
             catch (Exception ex)
             {
@@ -93,18 +61,14 @@ namespace FinanceControl.API.Controllers
         } 
 
         [HttpPost]
-        public async Task<ActionResult<ExpenseResponse>> CreateExpense(ExpenseDto expenseDto)
+        public async Task<ActionResult<ExpenseResponse>> CreateExpense(ExpenseRequest expenseDto)
         {
+            var expense = _mapper.Map<Expense>(expenseDto);
+
             try
             {
-                var expense = _mapper.Map<Expense>(expenseDto);
-                var result = await _expenseWorker.CreateExpense(expense);
-                return Ok(result);
-            }
-            catch (BadRequestException ex)
-            {
-                _logger.LogError(ex.Message, ex.StackTrace);
-                return BadRequest(ex.Message);
+                var response = await _expenseWorker.CreateExpense(expense);
+                return HandleResponse(response);
             }
             catch (Exception ex)
             {
@@ -114,18 +78,14 @@ namespace FinanceControl.API.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<ExpenseResponse>> UpdateExpense(ExpenseDto expenseDto)
+        public async Task<ActionResult<ExpenseResponse>> UpdateExpense(ExpenseRequest expenseDto)
         {
             var expense = _mapper.Map<Expense>(expenseDto);
+
             try
             {
-                var result = await _expenseWorker.UpdateExpense(expense);
-                return Ok(result);
-            }
-            catch (BadRequestException ex)
-            {
-                _logger.LogError(ex.Message, ex.StackTrace);
-                return BadRequest(ex.Message);
+                var response = await _expenseWorker.UpdateExpense(expense);
+                return HandleResponse(response);
             }
             catch (Exception ex)
             {
